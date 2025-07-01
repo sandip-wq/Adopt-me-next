@@ -7,3 +7,16 @@ services:
       - "3000:3000"
     environment:
       - NODE_ENV=production
+    depends_on:
+      - mongo  # Make sure Mongo starts first
+
+  mongo:
+    image: mongo:7
+    container_name: adopt-me-mongo
+    ports:
+      - "27017:27017"  # Expose MongoDB on localhost
+    volumes:
+      - mongo_data:/data/db  # Persist data between restarts
+
+volumes:
+  mongo_data:
