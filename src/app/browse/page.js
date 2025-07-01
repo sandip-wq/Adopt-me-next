@@ -1,12 +1,16 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import pets from '../../../data/pets.js';
 
 export default function BrowsePage() {
+  const [pets, setPets] = useState([]);
   const [interested, setInterested] = useState([]);
 
   useEffect(() => {
+    fetch('/api/pets')
+      .then(res => res.json())
+      .then(data => setPets(data));
+
     const saved = JSON.parse(localStorage.getItem('interestedPets')) || [];
     setInterested(saved);
   }, []);
@@ -26,16 +30,17 @@ export default function BrowsePage() {
     <div>
       <h1>Browse Pets</h1>
       {pets.map(pet => (
-        <div key={pet.id}>
+        <div key={pet._id}>
           <h2>{pet.name}</h2>
           <p>Type: {pet.type}</p>
           <p>Age: {pet.age}</p>
-          <p>Status: {interested.includes(pet.id) ? 'Interested' : 'Available'}</p>
+          <p>Breed: {pet.breed}</p>
+          <p>Status: {interested.includes(pet._id) ? 'Interested' : 'Available'}</p>
           <button
-            disabled={interested.includes(pet.id)}
-            onClick={() => toggleInterest(pet.id)}
+            disabled={interested.includes(pet._id)}
+            onClick={() => toggleInterest(pet._id)}
           >
-            {interested.includes(pet.id) ? 'Interested ✅' : "I'm Interested"}
+            {interested.includes(pet._id) ? 'Interested ✅' : "I'm Interested"}
           </button>
         </div>
       ))}
